@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
@@ -25,6 +25,17 @@ public class UserServiceImpl implements UserService{
         return UserResponseDto.toDto(user);
     }
 
+    /**
+     * 회원 정보 수정
+     *
+     * @param id       수정할 회원의 ID
+     * @param name     변경할 회원 이름 (null 가능)
+     * @param email    변경할 회원 이메일 (유니크 조건 검사)
+     * @param password 현재 비밀번호 (일치해야 수정 가능)
+     * @return         수정된 회원 정보 응답 DTO
+     * @throws ResourceForbiddenException 비밀번호가 일치하지 않을 경우 발생
+     * @throws ResourceConflictException  중복된 이메일이 존재하는 경우 발생
+     */
     @Override
     @Transactional
     public UpdateUserResponseDto updateUser(Long id, String name, String email, String password) {

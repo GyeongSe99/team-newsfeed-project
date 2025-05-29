@@ -10,6 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 회원 관련 기능을 담당하는 컨트롤러 클래스.
+ * - 회원 조회(id)
+ * - 회원 정보 수정
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
