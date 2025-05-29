@@ -1,4 +1,4 @@
-package com.npcamp.newsfeed.auth.dto;
+package com.npcamp.newsfeed.user.dto;
 
 import com.npcamp.newsfeed.common.entity.User;
 import lombok.AllArgsConstructor;
