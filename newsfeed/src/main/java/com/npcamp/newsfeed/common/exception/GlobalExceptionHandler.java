@@ -23,4 +23,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(ApiResponse.failure(e.getErrorCode().getMsg()));
     }
 
+    @ExceptionHandler(ResourceForbiddenException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleResourceForbiddenException(ResourceForbiddenException e) {
+        HttpStatus status = e.getErrorCode().getStatus();
+        return ResponseEntity.status(status).body(ApiResponse.failure(e.getErrorCode().getMsg()));
+    }
+
 }

@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 회원가입, 회원탈퇴, 로그인, 로그아웃
+ * 회원 인증 관련 기능을 제공하는 컨트롤러 클래스.
+ * - 회원 가입
+ * - 회원 탈퇴
+ * - 로그인
+ * - 로그아웃
  */
 @RestController
 @RequiredArgsConstructor

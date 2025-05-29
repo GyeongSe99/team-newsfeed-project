@@ -10,23 +10,18 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @Builder
-public class UserResponseDto {
-
-    private final Long id;
+public class UpdateUserResponseDto {
 
     private final String name;
 
     private final String email;
 
-    private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public static UserResponseDto toDto(User user) {
-        return UserResponseDto.builder()
-                .id(user.getId())
+    public static UpdateUserResponseDto toDto(User user) {
+        return UpdateUserResponseDto.builder()
                 .name(user.getName())
                 .email(user.getEmail())
-                .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();
     }
