@@ -22,7 +22,7 @@ public class Post extends BaseEntity {
 
     private Long writerId;
 
-    @ManyToOne
-    @JoinColumn(name = "writerId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "writerId", insertable = false, updatable = false)
     private User writer;
 }
