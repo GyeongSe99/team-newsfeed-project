@@ -2,14 +2,13 @@ package com.npcamp.newsfeed.auth.service;
 
 import com.npcamp.newsfeed.auth.dto.CreateUserResponseDto;
 import com.npcamp.newsfeed.common.entity.User;
+import com.npcamp.newsfeed.common.exception.ErrorCode;
 import com.npcamp.newsfeed.common.exception.ResourceConflictException;
 import com.npcamp.newsfeed.common.security.PasswordEncoder;
 import com.npcamp.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.npcamp.newsfeed.common.exception.ErrorCode.DUPLICATE_EMAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 유니크 이메일 중복 확인
         if (userRepository.existsByEmail(email)) {
-            throw new ResourceConflictException(DUPLICATE_EMAIL);
+            throw new ResourceConflictException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         // 비밀번호 암호화
