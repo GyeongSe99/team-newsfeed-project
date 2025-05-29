@@ -24,9 +24,9 @@ public class Post extends BaseEntity {
     @Column(nullable = false, columnDefinition = "longtext")
     private String content;
 
-    private Long writerId;
+    private Long writer_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writerId", insertable = false, updatable = false)
+    @JoinColumn(name = "writer_id", insertable = false, updatable = false)
     private User writer;
 }
