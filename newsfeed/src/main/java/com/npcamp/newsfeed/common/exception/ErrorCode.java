@@ -16,7 +16,7 @@ public enum ErrorCode {
 
     // 409 : CONFLICT Exception
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
-    SAME_PASSWORD(HttpStatus.CONFLICT, "기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
+    REUSED_PASSWORD(HttpStatus.CONFLICT, "기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
 
     private final HttpStatus status;
     private final String msg;

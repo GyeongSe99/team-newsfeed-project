@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
         // 기존 비밀번호와 동일한지 확인
         if (oldPassword.equals(newPassword)) {
-            throw new ResourceConflictException(ErrorCode.SAME_PASSWORD);
+            throw new ResourceConflictException(ErrorCode.REUSED_PASSWORD);
         }
 
         user.updatePassword(encoder.encode(newPassword));
