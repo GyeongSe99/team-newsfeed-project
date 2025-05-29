@@ -14,7 +14,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     protected ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(ResourceNotFoundException e) {
         HttpStatus status = e.getErrorCode().getStatus();
-        return ResponseEntity.status(status).body(ApiResponse.failure(e.getMessage()));
+        return ResponseEntity.status(status).body(ApiResponse.failure(e.getErrorCode().getMsg()));
+    }
+
+    @ExceptionHandler(ResourceConflictException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleResourceConflictException(ResourceConflictException e) {
+        HttpStatus status = e.getErrorCode().getStatus();
+        return ResponseEntity.status(status).body(ApiResponse.failure(e.getErrorCode().getMsg()));
     }
 
 }
