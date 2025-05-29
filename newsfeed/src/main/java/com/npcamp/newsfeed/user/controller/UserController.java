@@ -1,6 +1,7 @@
 package com.npcamp.newsfeed.user.controller;
 
 import com.npcamp.newsfeed.common.payload.ApiResponse;
+import com.npcamp.newsfeed.user.dto.UpdatePasswordRequestDto;
 import com.npcamp.newsfeed.user.dto.UpdateUserRequestDto;
 import com.npcamp.newsfeed.user.dto.UpdateUserResponseDto;
 import com.npcamp.newsfeed.user.dto.UserResponseDto;
@@ -35,11 +36,20 @@ public class UserController {
     ) {
         UpdateUserResponseDto responseDto =
                 userService.updateUser(
-                id,
-                requestDto.getName(),
-                requestDto.getEmail(),
-                requestDto.getPassword()
-        );
+                        id,
+                        requestDto.getName(),
+                        requestDto.getEmail(),
+                        requestDto.getPassword()
+                );
         return new ResponseEntity<>(ApiResponse.success(responseDto), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/password")
+    public ResponseEntity<ApiResponse<Void>> updatePassword(
+            @PathVariable Long id,
+            @RequestBody UpdatePasswordRequestDto requestDto
+    ) {
+        userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
+        return new ResponseEntity<>(ApiResponse.success("비밀번호 변경이 완료되었습니다."), HttpStatus.OK);
     }
 }
