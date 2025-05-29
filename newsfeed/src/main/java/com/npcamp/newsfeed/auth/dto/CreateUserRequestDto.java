@@ -12,11 +12,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CreateUserRequestDto {
 
-    @Size(min = 1, max = 10)
+    @Size(min = 1, max = 10, message = "이름은 10자 이하로 입력해 주세요!")
     @NotBlank(message = "이름을 입력해 주세요!")
     private final String name;
 
-    @Email
+    @Email(message = "이메일 형식을 확인해 주세요!")
     @NotBlank(message = "이메일을 입력해 주세요!")
     private final String email;
 
