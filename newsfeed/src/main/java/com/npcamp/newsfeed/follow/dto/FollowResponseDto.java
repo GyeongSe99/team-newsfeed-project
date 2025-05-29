@@ -11,7 +11,7 @@ public class FollowResponseDto {
     private Long followerUserId;
     private Long followeeUserId;
 
-    public static FollowResponseDto fromEntity(Follow follow) {
+    public static FollowResponseDto toDto(Follow follow) {
         return FollowResponseDto.builder()
                 .followerUserId(follow.getFollowerUserId())
                 .followeeUserId(follow.getFolloweeUserId())

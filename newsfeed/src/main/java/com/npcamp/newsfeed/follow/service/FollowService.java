@@ -27,6 +27,6 @@ public class FollowService {
         Follow saved = followRepository.save(follow);
 
         // 저장된 엔티티 기반으로 응답 DTO 생성
-        return FollowResponseDto.fromEntity(saved);
+        return FollowResponseDto.toDto(saved);
     }
 }
