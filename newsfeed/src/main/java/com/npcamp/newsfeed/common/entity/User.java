@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 
 @Entity
 @Getter
@@ -28,5 +29,15 @@ public class User extends BaseEntity {
         this.name = name;
         this.password = password;
         this.email = email;
+    }
+
+    public void updateUser(String name, String email) {
+        if (Strings.isNotBlank(name)) {
+            this.name = name;
+        }
+
+        if (Strings.isNotBlank(email)) {
+            this.email = email;
+        }
     }
 }
