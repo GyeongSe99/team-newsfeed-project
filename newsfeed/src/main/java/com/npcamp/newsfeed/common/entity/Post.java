@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder // PostResponse 빌더 패턴 적용
 @Table(name = "post")
 public class Post extends BaseEntity {
 
