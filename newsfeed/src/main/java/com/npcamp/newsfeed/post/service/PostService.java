@@ -25,7 +25,7 @@ public class PostService {
         Post post = Post.builder()
                 .title(req.getTitle())
                 .content(req.getContent())
-                .writerId(req.getWriterId())
+                .writer_id(req.getWriterId())
                 .build();
         Post saved = postRepo.save(post);
         return PostResponseDto.toDto(saved);
