@@ -32,10 +32,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserRepository userRepository;
-    private final PasswordEncoder encoder;
-    private final JwtUtil jwtUtil;
-
 
     @PostMapping("/signUp")
     public ResponseEntity<ApiResponse<CreateUserResponseDto>> signUp(@Valid @RequestBody CreateUserRequestDto requestDto) {
@@ -56,19 +52,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Void>> login(@RequestBody LoginRequestDto requestDto) {
 
-        String email = requestDto.getEmail();
-        String password = requestDto.getPassword();
-
-        // 해당 이메일 유저 조회
-        User user = userRepository.getUserByEmailOrElseThrow(email);
-
-        // 비밀번호 일치여부 확인
-        if (!encoder.matches(password, user.getPassword())) {
-            throw new ResourceForbiddenException(ErrorCode.INVALID_PASSWORD);
-        }
-
-        // JWT 토큰 발급 (userId 기반)
-        String token = jwtUtil.generateToken(user.getId());
+        String token = authService.generateToken(requestDto.getEmail(), requestDto.getPassword());
 
         // 발급된 토큰을 header에 담아 클라이언트에 전달
         HttpHeaders headers = new HttpHeaders();

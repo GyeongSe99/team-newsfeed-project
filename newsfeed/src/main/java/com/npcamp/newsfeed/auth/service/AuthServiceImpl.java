@@ -5,6 +5,7 @@ import com.npcamp.newsfeed.common.entity.User;
 import com.npcamp.newsfeed.common.exception.ErrorCode;
 import com.npcamp.newsfeed.common.exception.ResourceConflictException;
 import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
+import com.npcamp.newsfeed.common.security.JwtUtil;
 import com.npcamp.newsfeed.common.security.PasswordEncoder;
 import com.npcamp.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
 
     @Override
     @Transactional
@@ -61,6 +63,20 @@ public class AuthServiceImpl implements AuthService {
 
         // 회원탈퇴 ( deleted = false -> true / soft delete 적용 )
         userRepository.delete(user);
+    }
+
+    @Override
+    public String generateToken(String email, String password) {
+
+        // 해당 이메일 유저 조회
+        User user = userRepository.getUserByEmailOrElseThrow(email);
+
+        // 비밀번호 일치여부 확인
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new ResourceForbiddenException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        return jwtUtil.generateToken(user.getId()); // JWT 토큰 발급 (userId 기반)
     }
 
 }
