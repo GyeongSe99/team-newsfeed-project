@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String generateToken(String email, String password) {
+    public String login(String email, String password) {
 
         // 해당 이메일 유저 조회
         User user = userRepository.getUserByEmailOrElseThrow(email);

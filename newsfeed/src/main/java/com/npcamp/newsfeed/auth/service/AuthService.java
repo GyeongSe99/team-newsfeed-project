@@ -8,6 +8,6 @@ public interface AuthService {
 
     void deleteUser(Long id, String password);
 
-    String generateToken(String email, String password);
+    String login(String email, String password);
 
 }

@@ -46,7 +46,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Void>> login(@RequestBody LoginRequestDto requestDto) {
 
-        String token = authService.generateToken(requestDto.getEmail(), requestDto.getPassword());
+        String token = authService.login(requestDto.getEmail(), requestDto.getPassword());
 
         // 발급된 토큰을 header에 담아 클라이언트에 전달
         HttpHeaders headers = new HttpHeaders();
