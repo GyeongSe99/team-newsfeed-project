@@ -8,12 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostRequestDto {
-    @NotBlank
+    @NotBlank(message = "제목을 입력해주세요.")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
-    @NotNull
+    @NotNull(message = "작성자 ID를 입력해주세요.")
     private Long writerId;
 }

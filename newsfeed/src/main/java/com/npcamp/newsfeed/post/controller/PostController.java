@@ -37,15 +37,19 @@ public class PostController {
     @GetMapping
     public ResponseEntity<ApiResponse<PostListDto>> getPostList() {
         PostListDto list = postService.getPostList();
-        return ResponseEntity.ok(ApiResponse.success(list));
+        return new ResponseEntity<>(
+                ApiResponse.success(list),
+                HttpStatus.OK
+        );
     }
 
     /** 단건 조회 */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PostResponseDto>> getPost(@PathVariable Long id) {
         PostResponseDto dto = postService.getPost(id);
-        return ResponseEntity.ok(
-                ApiResponse.success(dto)
+        return new ResponseEntity<>(
+                ApiResponse.success(dto),
+                HttpStatus.OK
         );
     }
 
@@ -58,15 +62,19 @@ public class PostController {
         PostResponseDto updated = postService.updatePost(id,
                 req.getTitle(),
                 req.getContent());
-        return ResponseEntity.ok(
-                ApiResponse.success(updated));
+        return new ResponseEntity<>(
+                ApiResponse.success(updated),
+                HttpStatus.OK
+        );
     }
 
     /** 삭제 */
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return ResponseEntity.ok(
-                ApiResponse.success(null));
+        return new ResponseEntity<>(
+                ApiResponse.success(),
+                HttpStatus.OK
+        );
     }
 }
