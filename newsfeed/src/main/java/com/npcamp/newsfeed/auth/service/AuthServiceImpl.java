@@ -65,6 +65,13 @@ public class AuthServiceImpl implements AuthService {
         userRepository.delete(user);
     }
 
+    /**
+     * 로그인 로직 (토큰 발급)
+     *
+     * @param email    사용자 email
+     * @param password 사용자 비밀번호
+     * @return 발급된 토큰
+     */
     @Override
     public String login(String email, String password) {
 
