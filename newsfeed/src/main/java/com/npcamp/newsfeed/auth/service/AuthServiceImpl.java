@@ -4,6 +4,7 @@ import com.npcamp.newsfeed.auth.dto.CreateUserResponseDto;
 import com.npcamp.newsfeed.common.entity.User;
 import com.npcamp.newsfeed.common.exception.ErrorCode;
 import com.npcamp.newsfeed.common.exception.ResourceConflictException;
+import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
 import com.npcamp.newsfeed.common.security.PasswordEncoder;
 import com.npcamp.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,28 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(user);
 
         return CreateUserResponseDto.toDto(savedUser);
+    }
+
+    /**
+     * 회원탈퇴 로직
+     *
+     * @param id       사용자 id
+     * @param password 사용자 비밀번호
+     */
+    @Override
+    @Transactional
+    public void deleteUser(Long id, String password) {
+
+        // 해당 Id를 갖는 유저 조회
+        User user = userRepository.getUserOrElseThrow(id);
+
+        // 비밀번호 일치여부 확인
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new ResourceForbiddenException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        // 회원탈퇴 ( deleted = false -> true / soft delete 적용 )
+        userRepository.delete(user);
     }
 
 }
