@@ -15,9 +15,11 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    public static final String BEARER_PREFIX = "Bearer ";
+    @Value("${jwt.bearer-prefix}")
+    private String BEARER_PREFIX;
     // JWT 토큰의 만료 시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L;
+    @Value("${jwt.token-time}")
+    private long TOKEN_TIME;
     // 애플리케이션 설정 파일에서 주입받은 비밀 키
     @Value("${jwt.secret.key}")
     private String secretKey;
