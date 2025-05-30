@@ -27,4 +27,3 @@ jwt:
   secret:
     key: ${SECRET_KEY}
   token-time: 3600000  # 1시간
-  bearer-prefix: "Bearer "
