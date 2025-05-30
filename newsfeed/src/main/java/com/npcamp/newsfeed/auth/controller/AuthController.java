@@ -1,12 +1,20 @@
 package com.npcamp.newsfeed.auth.controller;
 
-import com.npcamp.newsfeed.auth.service.AuthService;
 import com.npcamp.newsfeed.auth.dto.CreateUserRequestDto;
 import com.npcamp.newsfeed.auth.dto.CreateUserResponseDto;
-import com.npcamp.newsfeed.common.payload.ApiResponse;
 import com.npcamp.newsfeed.auth.dto.DeleteUserRequestDto;
+import com.npcamp.newsfeed.auth.dto.LoginRequestDto;
+import com.npcamp.newsfeed.auth.service.AuthService;
+import com.npcamp.newsfeed.common.entity.User;
+import com.npcamp.newsfeed.common.exception.ErrorCode;
+import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
+import com.npcamp.newsfeed.common.payload.ApiResponse;
+import com.npcamp.newsfeed.common.security.JwtUtil;
+import com.npcamp.newsfeed.common.security.PasswordEncoder;
+import com.npcamp.newsfeed.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +32,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
 
 
     @PostMapping("/signUp")
-    public ResponseEntity<ApiResponse<CreateUserResponseDto>> sighUp(@Valid @RequestBody CreateUserRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<CreateUserResponseDto>> signUp(@Valid @RequestBody CreateUserRequestDto requestDto) {
         CreateUserResponseDto responseDto = authService.signUp(requestDto.getName(), requestDto.getEmail(), requestDto.getPassword());
         return new ResponseEntity<>(ApiResponse.success(responseDto), HttpStatus.CREATED);
     }
@@ -40,5 +51,29 @@ public class AuthController {
     ) {
         authService.deleteUser(id, requestDto.getPassword());
         return new ResponseEntity<>(ApiResponse.success("회원탈퇴가 완료되었습니다."), HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<Void>> login(@RequestBody LoginRequestDto requestDto) {
+
+        String email = requestDto.getEmail();
+        String password = requestDto.getPassword();
+
+        // 해당 이메일 유저 조회
+        User user = userRepository.getUserByEmailOrElseThrow(email);
+
+        // 비밀번호 일치여부 확인
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new ResourceForbiddenException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        // JWT 토큰 발급 (userId 기반)
+        String token = jwtUtil.generateToken(user.getId());
+
+        // 발급된 토큰을 header에 담아 클라이언트에 전달
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, token);
+
+        return new ResponseEntity<>(ApiResponse.success("토큰 생성 완료!"), headers, HttpStatus.OK);
     }
 }
