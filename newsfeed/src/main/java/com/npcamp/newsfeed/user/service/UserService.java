@@ -9,4 +9,5 @@ public interface UserService {
 
     UpdateUserResponseDto updateUser(Long id, String name, String email, String password);
 
+    void updatePassword(Long id, String oldPassword, String newPassword);
 }
