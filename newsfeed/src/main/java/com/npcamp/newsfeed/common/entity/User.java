@@ -5,9 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
+@SQLDelete(sql = "UPDATE user SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 @NoArgsConstructor
 public class User extends BaseEntity {
 
@@ -23,6 +27,8 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String password;
+
+    private Boolean deleted = Boolean.FALSE;
 
     @Builder
     private User(String name, String password, String email) {
