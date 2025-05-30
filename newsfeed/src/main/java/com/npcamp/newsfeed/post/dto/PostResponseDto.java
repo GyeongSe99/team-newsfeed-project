@@ -23,7 +23,7 @@ public class PostResponseDto {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .writerId(post.getWriter_id())
+                .writerId(post.getWriterId())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
