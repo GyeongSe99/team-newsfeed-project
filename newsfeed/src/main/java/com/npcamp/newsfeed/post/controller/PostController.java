@@ -1,5 +1,8 @@
 package com.npcamp.newsfeed.post.controller;
 
+import com.npcamp.newsfeed.comment.dto.CommentDto;
+import com.npcamp.newsfeed.comment.dto.CreateCommentRequestDto;
+import com.npcamp.newsfeed.comment.service.CommentService;
 import com.npcamp.newsfeed.common.payload.ApiResponse;
 import com.npcamp.newsfeed.post.dto.PostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     /**
      * 생성
@@ -69,5 +73,11 @@ public class PostController {
         postService.deletePost(id);
 
         return new ResponseEntity<>(ApiResponse.success(), HttpStatus.OK);
+    }
+
+    @PostMapping("/{postId}/comments")
+    public ResponseEntity<ApiResponse<?>> createComment(@PathVariable(name = "postId") Long postId, @RequestBody CreateCommentRequestDto request) {
+        CommentDto comment = commentService.createComment(postId, request.getContent(), request.getUserId());
+        return new ResponseEntity<>(ApiResponse.success(comment), HttpStatus.CREATED);
     }
 }

@@ -1,9 +1,17 @@
 package com.npcamp.newsfeed.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "comment")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Comment extends BaseEntity {
 
     @Id
