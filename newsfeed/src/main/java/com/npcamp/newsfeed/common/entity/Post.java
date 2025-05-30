@@ -3,10 +3,14 @@ package com.npcamp.newsfeed.common.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder // PostResponse 빌더 패턴 적용
 @Table(name = "post")
 public class Post extends BaseEntity {
 
