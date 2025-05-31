@@ -10,8 +10,10 @@ import java.util.List;
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     // 팔로워 조회
-    List<Follow> findByFolloweeUserId(Long followeeUserId);
+    List<Follow> findByFollowerUserId(Long followerUserId);
 
     // 팔로잉 조회
-    List<Follow> findByFollowerUserId(Long followerUserId);
+    List<Follow> findByFolloweeUserId(Long followeeUserId);
+
+
 }
