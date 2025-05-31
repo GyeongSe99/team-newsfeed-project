@@ -1,13 +1,13 @@
 package com.npcamp.newsfeed.follow.controller;
 
 import com.npcamp.newsfeed.common.payload.ApiResponse;
-import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import com.npcamp.newsfeed.follow.dto.FollowRequestDto;
+import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
 import com.npcamp.newsfeed.follow.service.FollowService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

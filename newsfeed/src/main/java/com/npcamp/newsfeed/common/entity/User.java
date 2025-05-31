@@ -28,7 +28,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    private Boolean deleted = Boolean.FALSE;
+    private final Boolean deleted = Boolean.FALSE;
 
     @Builder
     private User(String name, String password, String email) {

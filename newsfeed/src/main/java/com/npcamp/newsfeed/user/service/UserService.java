@@ -1,7 +1,7 @@
 package com.npcamp.newsfeed.user.service;
 
-import com.npcamp.newsfeed.user.dto.UserResponseDto;
 import com.npcamp.newsfeed.user.dto.UpdateUserResponseDto;
+import com.npcamp.newsfeed.user.dto.UserResponseDto;
 
 public interface UserService {
 

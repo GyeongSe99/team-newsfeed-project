@@ -1,12 +1,12 @@
 package com.npcamp.newsfeed.user.service;
 
-import com.npcamp.newsfeed.user.dto.UserResponseDto;
 import com.npcamp.newsfeed.common.entity.User;
 import com.npcamp.newsfeed.common.exception.ErrorCode;
 import com.npcamp.newsfeed.common.exception.ResourceConflictException;
 import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
 import com.npcamp.newsfeed.common.security.PasswordEncoder;
 import com.npcamp.newsfeed.user.dto.UpdateUserResponseDto;
+import com.npcamp.newsfeed.user.dto.UserResponseDto;
 import com.npcamp.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
