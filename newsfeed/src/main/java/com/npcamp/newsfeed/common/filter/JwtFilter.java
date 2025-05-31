@@ -1,15 +1,20 @@
 package com.npcamp.newsfeed.common.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npcamp.newsfeed.common.constant.RequestAttribute;
+import com.npcamp.newsfeed.common.exception.ErrorCode;
+import com.npcamp.newsfeed.common.payload.ApiResponse;
 import com.npcamp.newsfeed.common.security.JwtUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtFilter implements Filter {
 
@@ -48,7 +53,21 @@ public class JwtFilter implements Filter {
             }
         }
 
-        // TODO 유효하지 않은 토큰이면 401 응답
-        httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 JWT 토큰입니다.");
+        // 유효하지 않은 토큰일 때 jwtExceptionHandler 호출
+        jwtExceptionHandler(httpResponse, ErrorCode.NOT_VALID_TOKEN);
+
+    }
+
+    // 토큰 유효하지 않을 때 클라이언트에 JSON, ApiResponse로 응답하기 위한 예외처리 메서드
+    public void jwtExceptionHandler(HttpServletResponse response, ErrorCode errorCode) {
+        response.setStatus(errorCode.getStatus().value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            String json = new ObjectMapper().writeValueAsString(ApiResponse.failure(errorCode.getMsg()));
+            response.getWriter().write(json);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 }
