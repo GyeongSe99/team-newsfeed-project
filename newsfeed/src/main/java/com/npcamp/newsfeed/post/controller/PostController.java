@@ -1,12 +1,15 @@
 package com.npcamp.newsfeed.post.controller;
 
 import com.npcamp.newsfeed.common.payload.ApiResponse;
-import com.npcamp.newsfeed.post.dto.PostListDto;
 import com.npcamp.newsfeed.post.dto.PostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
 import com.npcamp.newsfeed.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,14 +26,8 @@ public class PostController {
      * 생성
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(
-            @RequestBody @Valid PostRequestDto req
-    ) {
-        PostResponseDto dto = postService.createPost(
-                req.getTitle(),
-                req.getContent(),
-                req.getWriterId()
-        );
+    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@RequestBody @Valid PostRequestDto req) {
+        PostResponseDto dto = postService.createPost(req.getTitle(), req.getContent(), req.getWriterId());
         return new ResponseEntity<>(ApiResponse.success(dto), HttpStatus.CREATED);
     }
 
@@ -38,12 +35,10 @@ public class PostController {
      * 전체 조회
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<PostListDto>> getPostList() {
-        PostListDto list = postService.getPostList();
-        return new ResponseEntity<>(
-                ApiResponse.success(list),
-                HttpStatus.OK
-        );
+    public ResponseEntity<ApiResponse<Page<PostResponseDto>>> getPostPage(@PageableDefault(size = 10, sort =
+            "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostResponseDto> page = postService.getPostPage(pageable);
+        return new ResponseEntity<>(ApiResponse.success(page), HttpStatus.OK);
     }
 
     /**
@@ -52,27 +47,18 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PostResponseDto>> getPost(@PathVariable Long id) {
         PostResponseDto dto = postService.getPost(id);
-        return new ResponseEntity<>(
-                ApiResponse.success(dto),
-                HttpStatus.OK
-        );
+        return new ResponseEntity<>(ApiResponse.success(dto), HttpStatus.OK);
     }
 
     /**
      * 수정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(
-            @PathVariable Long id,
-            @RequestBody @Valid PostRequestDto req
-    ) {
-        PostResponseDto updated = postService.updatePost(id,
-                req.getTitle(),
-                req.getContent());
-        return new ResponseEntity<>(
-                ApiResponse.success(updated),
-                HttpStatus.OK
-        );
+    public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable Long id,
+                                                                   @RequestBody @Valid PostRequestDto req) {
+        PostResponseDto updated = postService.updatePost(id, req.getTitle(), req.getContent());
+
+        return new ResponseEntity<>(ApiResponse.success(updated), HttpStatus.OK);
     }
 
     /**
@@ -81,9 +67,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return new ResponseEntity<>(
-                ApiResponse.success(),
-                HttpStatus.OK
-        );
+
+        return new ResponseEntity<>(ApiResponse.success(), HttpStatus.OK);
     }
 }
