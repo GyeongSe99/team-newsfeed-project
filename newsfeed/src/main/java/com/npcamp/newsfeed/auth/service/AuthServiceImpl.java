@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
     public String login(String email, String password) {
 
         // 해당 이메일 유저 조회
-        User user = userRepository.getUserByEmailOrElseThrow(email);
+        User user = userRepository.findUserByEmailOrElseThrow(email);
 
         // 비밀번호 일치여부 확인
         if (!encoder.matches(password, user.getPassword())) {
