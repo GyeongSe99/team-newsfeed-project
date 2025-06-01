@@ -46,9 +46,6 @@ public class CommentService {
     public CommentDto updateComment(Long commentId, String content, Long loginUserId) {
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
 
-        System.out.println("loginUserId: " + loginUserId);
-        System.out.println("commentUserId: " + findComment.getId());
-
         // 작성자 검증
         authorValidator.validateOwner(findComment.getUserId(), loginUserId);
 
@@ -59,7 +56,8 @@ public class CommentService {
     }
 
     public void deleteComment(Long commentId, Long loginUserId) {
-        authorValidator.validateOwner(loginUserId, commentId);
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+        authorValidator.validateOwner(findComment.getUserId(), loginUserId);
         commentRepository.deleteById(commentId);
     }
 }
