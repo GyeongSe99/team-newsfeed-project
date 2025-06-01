@@ -6,6 +6,8 @@ import com.npcamp.newsfeed.common.entity.Comment;
 import com.npcamp.newsfeed.common.entity.Post;
 import com.npcamp.newsfeed.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,5 +29,15 @@ public class CommentService {
         Comment saved = commentRepository.save(comment);
 
         return CommentDto.toDto(saved);
+    }
+
+    public CommentDto getComment(Long id) {
+        Comment comment = commentRepository.findByIdOrElseThrow(id);
+        return CommentDto.toDto(comment);
+    }
+
+    public Page<CommentDto> getCommentPage(Long postId, Pageable pageable) {
+        Page<Comment> commentPage = commentRepository.findAllByPostId(postId, pageable);
+        return commentPage.map(CommentDto::toDto);
     }
 }
