@@ -28,4 +28,9 @@ public class CommentService {
 
         return CommentDto.toDto(saved);
     }
+
+    public CommentDto getComment(Long id) {
+        Comment comment = commentRepository.findByIdOrElseThrow(id);
+        return CommentDto.toDto(comment);
+    }
 }

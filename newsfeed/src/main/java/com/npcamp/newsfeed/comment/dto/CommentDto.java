@@ -3,9 +3,11 @@ package com.npcamp.newsfeed.comment.dto;
 import com.npcamp.newsfeed.common.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @AllArgsConstructor
 @Builder
 public class CommentDto {
