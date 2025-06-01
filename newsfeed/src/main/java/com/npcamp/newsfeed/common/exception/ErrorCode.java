@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     // 401 : UNAUTHORIZED Exception
     NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 JWT 토큰입니다."), // 필터에서 토큰 유효성 검증에 사용
+    LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED, "로그인 해주세요!"), // 로그인하지 않은 사용자가 접근 시
 
     // 403 : FORBIDDEN Exception
     INVALID_PASSWORD(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다."),

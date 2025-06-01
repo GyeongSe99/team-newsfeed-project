@@ -36,26 +36,30 @@ public class JwtFilter implements Filter {
             return;
         }
 
-        // 헤더에서 토큰 가져오기
+        // 1. 요청 헤더에서 JWT 토큰 추출
         String token = httpRequest.getHeader("Authorization");
 
-        // 토큰 유효성 확인 및 httpRequest에 userId 저장
-        if (token != null && token.startsWith(JwtUtil.BEARER_PREFIX)) {
-            token = token.substring(JwtUtil.BEARER_PREFIX.length());
-
-            if (jwtUtil.validateToken(token)) {
-                Long userId = jwtUtil.extractUserId(token);
-
-                httpRequest.setAttribute(RequestAttribute.USER_ID, userId);
-
-                chain.doFilter(httpRequest, response);
-                return;
-            }
+        // 2. 로그인하지 않은 사용자 (토큰이 없거나 형식이 잘못된 경우)
+        if (token == null || !token.startsWith(JwtUtil.BEARER_PREFIX)) {
+            jwtExceptionHandler(httpResponse, ErrorCode.LOGIN_REQUIRED);
+            return;
         }
 
-        // 유효하지 않은 토큰일 때 jwtExceptionHandler 호출
-        jwtExceptionHandler(httpResponse, ErrorCode.NOT_VALID_TOKEN);
+        // 3. Bearer 접두어 제거
+        token = token.substring(JwtUtil.BEARER_PREFIX.length());
 
+        // 4. 토큰 유효성 검사 실패
+        if (!jwtUtil.validateToken(token)) {
+            jwtExceptionHandler(httpResponse, ErrorCode.NOT_VALID_TOKEN);
+            return;
+        }
+
+        // 5. 토큰에서 userId 추출 후 HttpServletRequest에 저장
+        Long userId = jwtUtil.extractUserId(token);
+        httpRequest.setAttribute(RequestAttribute.USER_ID, userId);
+
+        // 6. 다음 필터로 요청 전달
+        chain.doFilter(httpRequest, httpResponse);
     }
 
     // 토큰 유효하지 않을 때 클라이언트에 JSON, ApiResponse로 응답하기 위한 예외처리 메서드

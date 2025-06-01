@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.npcamp.newsfeed.common.constant.RequestAttribute.USER_ID;
+
 /**
  * 회원 관련 기능을 담당하는 컨트롤러 클래스.
  * - 회원 조회(id)
@@ -29,11 +31,12 @@ public class UserController {
         return new ResponseEntity<>(ApiResponse.success(responseDto), HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/me")
     public ResponseEntity<ApiResponse<UpdateUserResponseDto>> updateUser(
-            @PathVariable Long id,
+            @RequestAttribute(USER_ID) Long id,
             @RequestBody UpdateUserRequestDto requestDto
     ) {
+
         UpdateUserResponseDto responseDto =
                 userService.updateUser(
                         id,
@@ -41,12 +44,13 @@ public class UserController {
                         requestDto.getEmail(),
                         requestDto.getPassword()
                 );
+
         return new ResponseEntity<>(ApiResponse.success(responseDto), HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}/password")
+    @PatchMapping("/me/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
-            @PathVariable Long id,
+            @RequestAttribute(USER_ID) Long id,
             @RequestBody UpdatePasswordRequestDto requestDto
     ) {
         userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());

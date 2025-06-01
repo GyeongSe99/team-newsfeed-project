@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
     public void deleteUser(Long id, String password) {
 
         // 해당 Id를 갖는 유저 조회
-        User user = userRepository.getUserOrElseThrow(id);
+        User user = userRepository.findByIdOrElseThrow(id);
 
         // 비밀번호 일치여부 확인
         if (!encoder.matches(password, user.getPassword())) {
@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
     public String login(String email, String password) {
 
         // 해당 이메일 유저 조회
-        User user = userRepository.findUserByEmailOrElseThrow(email);
+        User user = userRepository.findByEmailOrElseThrow(email);
 
         // 비밀번호 일치여부 확인
         if (!encoder.matches(password, user.getPassword())) {
