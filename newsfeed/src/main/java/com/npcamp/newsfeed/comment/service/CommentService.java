@@ -57,4 +57,9 @@ public class CommentService {
 
         return CommentDto.toDto(saved);
     }
+
+    public void deleteComment(Long commentId, Long loginUserId) {
+        authorValidator.validateOwner(loginUserId, commentId);
+        commentRepository.deleteById(commentId);
+    }
 }

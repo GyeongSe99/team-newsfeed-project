@@ -24,11 +24,18 @@ public class CommentController {
         return new ResponseEntity<>(ApiResponse.success(commentDto), HttpStatus.OK);
     }
 
-    @PatchMapping("/{commentId}")
-    public ResponseEntity<ApiResponse<CommentDto>> updateComment(@PathVariable Long commentId,
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<CommentDto>> updateComment(@PathVariable("id") Long commentId,
                                                                  @RequestBody @Valid UpdateCommentRequestDto requestDto,
                                                                  @RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId) {
         CommentDto saved = commentService.updateComment(commentId, requestDto.getContent(), loginUserId);
         return new ResponseEntity<>(ApiResponse.success(saved), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable("id") Long commentId,
+                                                           @RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId) {
+        commentService.deleteComment(commentId, loginUserId);
+        return new ResponseEntity<>(ApiResponse.success("댓글을 성공적으로 삭제하였습니다."), HttpStatus.OK);
     }
 }
