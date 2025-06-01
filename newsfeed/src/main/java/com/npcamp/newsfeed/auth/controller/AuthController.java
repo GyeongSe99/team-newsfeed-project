@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.npcamp.newsfeed.common.constant.RequestAttribute.USER_ID;
+
 /**
  * 회원 인증 관련 기능을 제공하는 컨트롤러 클래스.
  * - 회원 가입
@@ -34,9 +36,9 @@ public class AuthController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/me")
     public ResponseEntity<ApiResponse<Void>> deleteUser(
-            @PathVariable Long id,
+            @RequestAttribute(USER_ID) Long id,
             @RequestBody DeleteUserRequestDto requestDto
     ) {
         authService.deleteUser(id, requestDto.getPassword());
