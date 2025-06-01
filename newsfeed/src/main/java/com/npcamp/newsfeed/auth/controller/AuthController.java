@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.npcamp.newsfeed.common.constant.RequestAttribute.USER_ID;
+import static com.npcamp.newsfeed.common.constant.RequestAttributeKey.USER_ID;
 
 /**
  * 회원 인증 관련 기능을 제공하는 컨트롤러 클래스.
