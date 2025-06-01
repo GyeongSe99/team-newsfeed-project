@@ -12,17 +12,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    default User getUserOrElseThrow(Long id) {
+    default User findByIdOrElseThrow(Long id) {
         return findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND)
                 );
     }
 
-    Optional<User> findUserByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    default User findUserByEmailOrElseThrow(String email) {
-        return findUserByEmail(email)
+    default User findByEmailOrElseThrow(String email) {
+        return findByEmail(email)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND)
                 );
