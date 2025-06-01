@@ -1,6 +1,8 @@
 package com.npcamp.newsfeed.post.service;
 
 import com.npcamp.newsfeed.common.entity.Post;
+import com.npcamp.newsfeed.common.exception.*;
+import com.npcamp.newsfeed.post.dto.PostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
 import com.npcamp.newsfeed.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +21,12 @@ public class PostService {
     /**
      * CREATE: 새 게시글을 저장하고 DTO로 반환한다.
      */
-    public PostResponseDto createPost(String title, String content, Long writerId) {
-        Post post = Post.builder().title(title).content(content).writerId(writerId).build();
+    public PostResponseDto createPost(Long userId, PostRequestDto requestDto) {
+        Post post = Post.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .writerId(userId)
+                .build();
         Post saved = postRepository.save(post);
         return PostResponseDto.toDto(saved);
     }
@@ -28,8 +34,10 @@ public class PostService {
     /**
      * READ ONE: 단일 게시글 조회
      */
+    @Transactional
     public PostResponseDto getPost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found: " + id));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.POST_NOT_FOUND));
         return PostResponseDto.toDto(post);
     }
 
@@ -37,10 +45,18 @@ public class PostService {
     /**
      * UPDATE: 게시글 수정 후 DTO로 반환
      */
-    public PostResponseDto updatePost(Long id, String title, String content) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found: " + id));
-        post.setTitle(title);
-        post.setContent(content);
+    public PostResponseDto updatePost(Long postId, Long userId, PostRequestDto requestDto) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.POST_NOT_FOUND));
+
+        if (!post.getWriterId().equals(userId)) {
+            throw new ResourceForbiddenException(ErrorCode.UNAUTHORIZED_USER);
+        }
+
+        post.setTitle(requestDto.getTitle());
+        post.setContent(requestDto.getContent());
+/*
+        setUpdatedAt 는 japAuditing에서 자동으로 되는걸로 알고 추가하지 않았습니다.
+*/
 
         Post updated = postRepository.save(post);
         return PostResponseDto.toDto(updated);
@@ -49,8 +65,13 @@ public class PostService {
     /**
      * DELETE: 게시글 삭제
      */
-    public void deletePost(Long id) {
-        postRepository.deleteById(id);
+    public void deletePost(Long postId, Long userId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.POST_NOT_FOUND));
+
+        if (!post.getWriterId().equals(userId)) {
+            throw new ResourceForbiddenException(ErrorCode.UNAUTHORIZED_USER);        }
+
+        postRepository.delete(post);
     }
 
     /**
@@ -59,6 +80,7 @@ public class PostService {
      *
      * @param pageable size, sort, direction, page
      */
+    @Transactional
     public Page<PostResponseDto> getPostPage(Pageable pageable) {
         Page<Post> postPage = postRepository.findAll(pageable);
         return postPage.map(PostResponseDto::toDto);

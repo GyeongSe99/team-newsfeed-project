@@ -7,7 +7,9 @@ import com.npcamp.newsfeed.common.payload.ApiResponse;
 import com.npcamp.newsfeed.post.dto.PostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
 import com.npcamp.newsfeed.post.service.PostService;
+import com.npcamp.newsfeed.common.constant.RequestAttribute;
 import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +32,10 @@ public class PostController {
      * 생성
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@RequestBody @Valid PostRequestDto req) {
-        PostResponseDto dto = postService.createPost(req.getTitle(), req.getContent(), req.getWriterId());
-        return new ResponseEntity<>(ApiResponse.success(dto), HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@RequestBody @Valid PostRequestDto requestDto, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute(RequestAttribute.USER_ID);
+        PostResponseDto responseDto = postService.createPost(userId, requestDto);
+        return new ResponseEntity<>(ApiResponse.success(responseDto), HttpStatus.CREATED);
     }
 
     /**
@@ -58,10 +61,9 @@ public class PostController {
      * 수정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable Long id,
-                                                                   @RequestBody @Valid PostRequestDto req) {
-        PostResponseDto updated = postService.updatePost(id, req.getTitle(), req.getContent());
-
+    public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable Long id, @RequestBody @Valid PostRequestDto requestDto, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute(RequestAttribute.USER_ID);
+        PostResponseDto updated = postService.updatePost(id, userId, requestDto);
         return new ResponseEntity<>(ApiResponse.success(updated), HttpStatus.OK);
     }
 
@@ -69,9 +71,9 @@ public class PostController {
      * 삭제
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
-
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long id, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute(RequestAttribute.USER_ID);
+        postService.deletePost(id, userId);
         return new ResponseEntity<>(ApiResponse.success(), HttpStatus.OK);
     }
 
