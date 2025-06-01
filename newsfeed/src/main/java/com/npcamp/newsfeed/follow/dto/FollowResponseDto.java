@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class FollowResponseDto {
 
     private Long id;
-    private Long followerUserId;  // 나를 팔로우하는 사람 ID (팔로워)
-    private Long followeeUserId;  // 내가 팔로우하는 사람 ID (팔로잉)
+    private Long followerUserId;  // 나를 팔로우하는 사람 ID - 팔로워
+    private Long followeeUserId;  // 내가 팔로우하는 사람 ID - 팔로잉
 
     public static FollowResponseDto toDto(Follow follow) {
         return FollowResponseDto.builder()

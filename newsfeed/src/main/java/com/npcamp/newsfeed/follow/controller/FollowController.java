@@ -29,14 +29,14 @@ public class FollowController {
         return new ResponseEntity<>(ApiResponse.success(created), HttpStatus.CREATED);
     }
 
-    // 팔로워 조회
+    // 팔로워 목록 조회
     @GetMapping("/followers/{userId}")
     public ResponseEntity<ApiResponse<List<Follow>>> getFollowers(@PathVariable Long userId) {
         List<Follow> followers = followService.getFollowers(userId);
         return ResponseEntity.ok(ApiResponse.success(followers));
     }
 
-    // 팔로잉 조회
+    // 팔로잉 목록 조회
     @GetMapping("/followings/{userId}")
     public ResponseEntity<ApiResponse<List<Follow>>> getFollowings(@PathVariable Long userId) {
         List<Follow> followings = followService.getFollowings(userId);
