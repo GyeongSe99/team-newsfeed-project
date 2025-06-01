@@ -19,8 +19,8 @@ public class FollowService {
     @Transactional
     public FollowResponseDto createFollow(Long followerUserId, Long followeeUserId) {
         Follow follow = Follow.builder()
-                .followerUserId(followerUserId)
-                .followeeUserId(followeeUserId)
+                .followerUserId(followerUserId)  // 나를 팔로우하는 사람 ID (팔로워)
+                .followeeUserId(followeeUserId)  // 내가 팔로우하는 사람 ID (팔로잉)
                 .build();
         Follow saved = followRepository.save(follow);
         return FollowResponseDto.toDto(saved);
@@ -38,7 +38,7 @@ public class FollowService {
         return followRepository.findByFollowerUserId(userId);
     }
 
-    // 단일 조회
+    // 단일 팔로우 조회
     @Transactional(readOnly = true)
     public Follow getFollowById(Long id) {
         return followRepository.findById(id)
