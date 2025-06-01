@@ -75,8 +75,8 @@ public class PostController {
         return new ResponseEntity<>(ApiResponse.success(), HttpStatus.OK);
     }
 
-    @PostMapping("/{postId}/comments")
-    public ResponseEntity<ApiResponse<CommentDto>> createComment(@PathVariable(name = "postId") Long postId,
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<ApiResponse<CommentDto>> createComment(@PathVariable(name = "id") Long postId,
                                                         @RequestBody @Valid CreateCommentRequestDto request) {
         CommentDto comment = commentService.createComment(postId, request.getContent(), request.getUserId());
         return new ResponseEntity<>(ApiResponse.success(comment), HttpStatus.CREATED);
