@@ -21,14 +21,10 @@ public class CommentService {
     private final AuthorValidator authorValidator;
 
     @Transactional
-    public CommentDto createComment(Long postId, String content, Long userId) {
+    public CommentDto createComment(Long postId, String content, Long loginUserId) {
         Post findPost = postRepository.findByIdOrElseThrow(postId);
 
-        Comment comment = Comment.builder()
-                .postId(findPost.getId())
-                .content(content)
-                .userId(userId)
-                .build();
+        Comment comment = Comment.builder().postId(findPost.getId()).content(content).userId(loginUserId).build();
 
         Comment saved = commentRepository.save(comment);
 

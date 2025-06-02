@@ -62,8 +62,7 @@ public class PostController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable(name = "id") Long postId,
-                                                                   @RequestAttribute(RequestAttributeKey.USER_ID) Long userId,
-                                                                   @RequestBody @Valid UpdatePostRequestDto req) {
+                                                                   @RequestAttribute(RequestAttributeKey.USER_ID) Long userId, @RequestBody @Valid UpdatePostRequestDto req) {
         PostResponseDto updated = postService.updatePost(postId, userId, req.getTitle(), req.getContent());
 
         return new ResponseEntity<>(ApiResponse.success(updated), HttpStatus.OK);
@@ -82,8 +81,9 @@ public class PostController {
 
     @PostMapping("/{id}/comments")
     public ResponseEntity<ApiResponse<CommentDto>> createComment(@PathVariable(name = "id") Long postId,
-                                                                 @RequestBody @Valid CreateCommentRequestDto request) {
-        CommentDto comment = commentService.createComment(postId, request.getContent(), request.getUserId());
+                                                                 @RequestBody @Valid CreateCommentRequestDto request,
+                                                                 @RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId) {
+        CommentDto comment = commentService.createComment(postId, request.getContent(), loginUserId);
         return new ResponseEntity<>(ApiResponse.success(comment), HttpStatus.CREATED);
     }
 
@@ -95,9 +95,8 @@ public class PostController {
      * @return 댓글 목록을 담은 Page<CommentDto> 객체
      */
     @GetMapping("/{id}/comments")
-    public ResponseEntity<ApiResponse<?>> getComments(@PathVariable(name = "id") Long postId,
-                                                      @PageableDefault(size = 10, sort = "createdAt", direction =
-                                                              Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ApiResponse<?>> getComments(@PathVariable(name = "id") Long postId, @PageableDefault(size =
+            10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CommentDto> commentPage = commentService.getCommentPage(postId, pageable);
         return new ResponseEntity<>(ApiResponse.success(commentPage), HttpStatus.OK);
     }
