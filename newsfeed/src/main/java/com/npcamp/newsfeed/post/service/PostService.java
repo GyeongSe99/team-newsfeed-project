@@ -54,9 +54,6 @@ public class PostService {
 
         post.setTitle(requestDto.getTitle());
         post.setContent(requestDto.getContent());
-/*
-        setUpdatedAt 는 japAuditing에서 자동으로 되는걸로 알고 추가하지 않았습니다.
-*/
 
         Post updated = postRepository.save(post);
         return PostResponseDto.toDto(updated);
