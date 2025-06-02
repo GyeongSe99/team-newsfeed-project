@@ -3,10 +3,13 @@ package com.npcamp.newsfeed.post.controller;
 import com.npcamp.newsfeed.comment.dto.CommentDto;
 import com.npcamp.newsfeed.comment.dto.CreateCommentRequestDto;
 import com.npcamp.newsfeed.comment.service.CommentService;
+import com.npcamp.newsfeed.common.constant.RequestAttributeKey;
 import com.npcamp.newsfeed.common.payload.ApiResponse;
-import com.npcamp.newsfeed.post.dto.PostRequestDto;
+import com.npcamp.newsfeed.post.dto.CreatePostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
+import com.npcamp.newsfeed.post.dto.UpdatePostRequestDto;
 import com.npcamp.newsfeed.post.service.PostService;
+import com.npcamp.newsfeed.postlike.service.PostLikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,13 +28,15 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final PostLikeService postLikeService;
 
     /**
      * 생성
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@RequestBody @Valid PostRequestDto req) {
-        PostResponseDto dto = postService.createPost(req.getTitle(), req.getContent(), req.getWriterId());
+    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@RequestBody @Valid CreatePostRequestDto req,
+                                                                   @RequestAttribute(RequestAttributeKey.USER_ID) Long writerId) {
+        PostResponseDto dto = postService.createPost(req.getTitle(), req.getContent(), writerId);
         return new ResponseEntity<>(ApiResponse.success(dto), HttpStatus.CREATED);
     }
 
@@ -58,9 +63,9 @@ public class PostController {
      * 수정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable Long id,
-                                                                   @RequestBody @Valid PostRequestDto req) {
-        PostResponseDto updated = postService.updatePost(id, req.getTitle(), req.getContent());
+    public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable(name = "id") Long postId,
+                                                                   @RequestAttribute(RequestAttributeKey.USER_ID) Long userId, @RequestBody @Valid UpdatePostRequestDto req) {
+        PostResponseDto updated = postService.updatePost(postId, userId, req.getTitle(), req.getContent());
 
         return new ResponseEntity<>(ApiResponse.success(updated), HttpStatus.OK);
     }
@@ -69,16 +74,18 @@ public class PostController {
      * 삭제
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable(name = "id") Long postId,
+                                                        @RequestAttribute(RequestAttributeKey.USER_ID) Long userId) {
+        postService.deletePost(postId, userId);
 
         return new ResponseEntity<>(ApiResponse.success(), HttpStatus.OK);
     }
 
     @PostMapping("/{id}/comments")
     public ResponseEntity<ApiResponse<CommentDto>> createComment(@PathVariable(name = "id") Long postId,
-                                                                 @RequestBody @Valid CreateCommentRequestDto request) {
-        CommentDto comment = commentService.createComment(postId, request.getContent(), request.getUserId());
+                                                                 @RequestBody @Valid CreateCommentRequestDto request,
+                                                                 @RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId) {
+        CommentDto comment = commentService.createComment(postId, request.getContent(), loginUserId);
         return new ResponseEntity<>(ApiResponse.success(comment), HttpStatus.CREATED);
     }
 
@@ -90,10 +97,16 @@ public class PostController {
      * @return 댓글 목록을 담은 Page<CommentDto> 객체
      */
     @GetMapping("/{id}/comments")
-    public ResponseEntity<ApiResponse<?>> getComments(@PathVariable(name = "id") Long postId,
-                                                      @PageableDefault(size = 10, sort = "createdAt", direction =
-                                                              Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<CommentDto>>> getComments(@PathVariable(name = "id") Long postId, @PageableDefault(size =
+            10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CommentDto> commentPage = commentService.getCommentPage(postId, pageable);
         return new ResponseEntity<>(ApiResponse.success(commentPage), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<ApiResponse<Void>> toggleLike(@PathVariable(name = "id") Long postId,@RequestAttribute(name = RequestAttributeKey.USER_ID) Long userId) {
+        boolean isNowLiked = postLikeService.toggleLike(postId, userId);
+        String message = isNowLiked ? "좋아요를 등록했습니다." : "좋아요를 취소했습니다.";
+        return new ResponseEntity<>(ApiResponse.success(message), HttpStatus.OK);
     }
 }
