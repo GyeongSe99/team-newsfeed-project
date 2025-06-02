@@ -39,14 +39,14 @@ public class AuthController {
     @DeleteMapping("/me")
     public ResponseEntity<ApiResponse<Void>> deleteUser(
             @RequestAttribute(USER_ID) Long id,
-            @RequestBody DeleteUserRequestDto requestDto
+            @Valid @RequestBody DeleteUserRequestDto requestDto
     ) {
         authService.deleteUser(id, requestDto.getPassword());
         return new ResponseEntity<>(ApiResponse.success("회원탈퇴가 완료되었습니다."), HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Void>> login(@RequestBody LoginRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<Void>> login(@Valid @RequestBody LoginRequestDto requestDto) {
 
         String token = authService.login(requestDto.getEmail(), requestDto.getPassword());
 

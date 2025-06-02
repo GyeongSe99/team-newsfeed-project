@@ -6,6 +6,7 @@ import com.npcamp.newsfeed.user.dto.UpdateUserRequestDto;
 import com.npcamp.newsfeed.user.dto.UpdateUserResponseDto;
 import com.npcamp.newsfeed.user.dto.UserResponseDto;
 import com.npcamp.newsfeed.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<ApiResponse<UpdateUserResponseDto>> updateUser(
             @RequestAttribute(USER_ID) Long id,
-            @RequestBody UpdateUserRequestDto requestDto
+            @Valid @RequestBody UpdateUserRequestDto requestDto
     ) {
 
         UpdateUserResponseDto responseDto =
@@ -51,7 +52,7 @@ public class UserController {
     @PatchMapping("/me/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
             @RequestAttribute(USER_ID) Long id,
-            @RequestBody UpdatePasswordRequestDto requestDto
+            @Valid @RequestBody UpdatePasswordRequestDto requestDto
     ) {
         userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
         return new ResponseEntity<>(ApiResponse.success("비밀번호 변경이 완료되었습니다."), HttpStatus.OK);
