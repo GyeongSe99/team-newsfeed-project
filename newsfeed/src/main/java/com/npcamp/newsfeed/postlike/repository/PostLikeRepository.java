@@ -1,4 +1,4 @@
-package com.npcamp.newsfeed.post.repository;
+package com.npcamp.newsfeed.postlike.repository;
 
 import com.npcamp.newsfeed.common.entity.PostLike;
 import org.springframework.data.jpa.repository.JpaRepository;
