@@ -13,14 +13,22 @@ import lombok.NoArgsConstructor;
 public class FollowResponseDto {
 
     private Long id;
-    private Long followerUserId;  // 팔로워
-    private Long followeeUserId;  // 팔로잉
+    private String follower;  // 팔로워
+    private String followee;  // 팔로잉
 
-    public static FollowResponseDto toDto(Follow follow) {
+    public static FollowResponseDto toDto(Follow follow, Long loginUserId) {
+        String followerMsg = follow.getFolloweeUserId().equals(loginUserId)
+                ? "회원님을 팔로우 중입니다."
+                : "회원님을 팔로우하고 있지 않습니다.";
+
+        String followeeMsg = follow.getFollowerUserId().equals(loginUserId)
+                ? follow.getFolloweeUserId() + "를 팔로우 중입니다."
+                : follow.getFolloweeUserId() + "를 팔로우하고 있지 않습니다.";
+
         return FollowResponseDto.builder()
                 .id(follow.getId())
-                .followerUserId(follow.getFollowerUserId())
-                .followeeUserId(follow.getFolloweeUserId())
+                .follower(followerMsg)
+                .followee(followeeMsg)
                 .build();
     }
 }

@@ -28,7 +28,7 @@ public class FollowService {
                 .followeeUserId(followeeUserId)
                 .build();
         Follow saved = followRepository.save(follow);
-        return FollowResponseDto.toDto(saved);
+        return FollowResponseDto.toDto(saved, followerUserId); // 로그인한 사용자 기준 메시지
     }
 
     // 팔로워 목록 조회
@@ -36,7 +36,7 @@ public class FollowService {
     public List<FollowResponseDto> getFollowers(Long userId) {
         List<Follow> follows = followRepository.findByFolloweeUserId(userId);
         return follows.stream()
-                .map(FollowResponseDto::toDto)
+                .map(follow -> FollowResponseDto.toDto(follow, userId))
                 .collect(Collectors.toList());
     }
 
@@ -45,15 +45,15 @@ public class FollowService {
     public List<FollowResponseDto> getFollowees(Long userId) {
         List<Follow> follows = followRepository.findByFollowerUserId(userId);
         return follows.stream()
-                .map(FollowResponseDto::toDto)
+                .map(follow -> FollowResponseDto.toDto(follow, userId))
                 .collect(Collectors.toList());
     }
 
     // 단일 팔로우 조회
     @Transactional(readOnly = true)
-    public FollowResponseDto getFollowById(Long id) {
+    public FollowResponseDto getFollowById(Long id, Long loginUserId) {
         Follow follow = followRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.FOLLOW_NOT_FOUND));
-        return FollowResponseDto.toDto(follow);
+        return FollowResponseDto.toDto(follow, loginUserId);
     }
 }
