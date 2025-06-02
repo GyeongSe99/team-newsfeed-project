@@ -14,6 +14,7 @@ public enum ErrorCode {
     // 403 : FORBIDDEN Exception
     INVALID_PASSWORD(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다."),
     NOT_RESOURCE_OWNER(HttpStatus.FORBIDDEN, "해당 리소스 소유자가 아닙니다."),
+    CANNOT_LIKE_OWN_POST(HttpStatus.FORBIDDEN, "본인의 게시물에는 좋아요를 남길 수 없습니다."),
 
     // 404 : NOT_FOUND Exception
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."),
