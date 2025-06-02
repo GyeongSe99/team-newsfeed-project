@@ -1,6 +1,7 @@
 package com.npcamp.newsfeed.follow.service;
 
 import com.npcamp.newsfeed.common.entity.Follow;
+import com.npcamp.newsfeed.follow.dto.FollowRequestDto;
 import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
 import com.npcamp.newsfeed.follow.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,8 @@ public class FollowService {
 
     // 팔로우 생성
     @Transactional
-    public FollowResponseDto createFollow(Long followerUserId, Long followeeUserId) {
+    public FollowResponseDto createFollow(Long followerUserId, FollowRequestDto followDto) {
+        Long followeeUserId = followDto.getFolloweeUserId(); // DTO에서 추출
         Follow follow = Follow.builder()
                 .followerUserId(followerUserId)
                 .followeeUserId(followeeUserId)

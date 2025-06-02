@@ -6,6 +6,7 @@ import com.npcamp.newsfeed.common.payload.ApiResponse;
 import com.npcamp.newsfeed.follow.dto.FollowRequestDto;
 import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
 import com.npcamp.newsfeed.follow.service.FollowService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,11 @@ public class FollowController {
     // 팔로우 생성
     @PostMapping
     public ResponseEntity<ApiResponse<FollowResponseDto>> createFollow(
-            @RequestAttribute("USER_ID") Long followerUserId,
-            @RequestBody FollowRequestDto followDto
-    ) {
-        FollowResponseDto created = followService.createFollow(
-                followerUserId,
-                followDto.getFolloweeUserId()
-        );
-        return new ResponseEntity<>(ApiResponse.success(created), HttpStatus.CREATED);
+            @RequestAttribute(RequestAttributeKey.USER_ID) Long followerUserId,
+            @Valid @RequestBody FollowRequestDto followDto) {
+
+        FollowResponseDto responseDto = followService.createFollow(followerUserId, followDto);
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
     // 팔로워 목록 조회
