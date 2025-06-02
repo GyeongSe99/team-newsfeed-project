@@ -3,6 +3,7 @@ package com.npcamp.newsfeed.post.service;
 import com.npcamp.newsfeed.common.entity.Post;
 import com.npcamp.newsfeed.common.entity.PostLike;
 import com.npcamp.newsfeed.common.exception.*;
+import com.npcamp.newsfeed.common.validator.AuthorValidator;
 import com.npcamp.newsfeed.post.dto.PostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
 import com.npcamp.newsfeed.post.repository.PostLikeRepository;
@@ -20,7 +21,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
-
+    private final AuthorValidator authorValidator;
 
     /**
      * CREATE: 새 게시글을 저장하고 DTO로 반환한다.
@@ -54,9 +55,7 @@ public class PostService {
     public PostResponseDto updatePost(Long postId, Long userId, PostRequestDto requestDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.POST_NOT_FOUND));
 
-        if (!post.getWriterId().equals(userId)) {
-            throw new ResourceForbiddenException(ErrorCode.UNAUTHORIZED_USER);
-        }
+        authorValidator.validateOwner(post.getWriterId(), userId);
 
         post.setTitle(requestDto.getTitle());
         post.setContent(requestDto.getContent());
@@ -72,8 +71,7 @@ public class PostService {
     public void deletePost(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.POST_NOT_FOUND));
 
-        if (!post.getWriterId().equals(userId)) {
-            throw new ResourceForbiddenException(ErrorCode.UNAUTHORIZED_USER);        }
+        authorValidator.validateOwner(post.getWriterId(), userId);
 
         postRepository.delete(post);
     }
