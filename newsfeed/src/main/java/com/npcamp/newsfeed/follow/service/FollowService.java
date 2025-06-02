@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,22 +31,27 @@ public class FollowService {
 
     // 팔로워 목록 조회
     @Transactional(readOnly = true)
-    public List<Follow> getFollowers(Long userId) {
-        return followRepository.findByFolloweeUserId(userId);
+    public List<FollowResponseDto> getFollowers(Long userId) {
+        List<Follow> follows = followRepository.findByFolloweeUserId(userId);
+        return follows.stream()
+                .map(FollowResponseDto::toDto)
+                .collect(Collectors.toList());
     }
 
     // 팔로잉 목록 조회
     @Transactional(readOnly = true)
-    public List<Follow> getFollowings(Long userId) {
-        return followRepository.findByFollowerUserId(userId);
+    public List<FollowResponseDto> getFollowings(Long userId) {
+        List<Follow> follows = followRepository.findByFollowerUserId(userId);
+        return follows.stream()
+                .map(FollowResponseDto::toDto)
+                .collect(Collectors.toList());
     }
 
     // 단일 팔로우 조회
     @Transactional(readOnly = true)
-    public Follow getFollowById(Long id) {
-        return followRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("해당 팔로우 관계를 찾을 수 없습니다. (id: " + id + ")")
-                );
+    public FollowResponseDto getFollowById(Long id) {
+        Follow follow = followRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("팔로우 정보가 존재하지 않습니다."));
+        return FollowResponseDto.toDto(follow);
     }
 }
