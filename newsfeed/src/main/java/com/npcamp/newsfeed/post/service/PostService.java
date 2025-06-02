@@ -1,8 +1,6 @@
 package com.npcamp.newsfeed.post.service;
 
 import com.npcamp.newsfeed.common.entity.Post;
-import com.npcamp.newsfeed.common.exception.ErrorCode;
-import com.npcamp.newsfeed.common.exception.ResourceNotFoundException;
 import com.npcamp.newsfeed.common.validator.AuthorValidator;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
 import com.npcamp.newsfeed.post.repository.PostRepository;
@@ -43,7 +41,7 @@ public class PostService {
      */
     @Transactional(readOnly = true)
     public PostResponseDto getPost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.POST_NOT_FOUND));
+        Post post = postRepository.findByIdOrElseThrow(id);
         return PostResponseDto.toDto(post);
     }
 
@@ -55,7 +53,7 @@ public class PostService {
     public PostResponseDto updatePost(Long postId, Long userId, String title, String content) {
 
         // 게시글 조회
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.POST_NOT_FOUND));
+        Post post = postRepository.findByIdOrElseThrow(postId);
 
         // writerId와 로그인된 userId 일치여부 확인
         authorValidator.validateOwner(post.getWriterId(), userId);
@@ -81,7 +79,7 @@ public class PostService {
     public void deletePost(Long postId, Long userId) {
 
         // 게시글 조회
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.POST_NOT_FOUND));
+        Post post = postRepository.findByIdOrElseThrow(postId);
 
         // writerId와 로그인된 userId 일치여부 확인
         authorValidator.validateOwner(post.getWriterId(), userId);
