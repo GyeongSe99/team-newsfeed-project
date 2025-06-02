@@ -3,9 +3,11 @@ package com.npcamp.newsfeed.post.controller;
 import com.npcamp.newsfeed.comment.dto.CommentDto;
 import com.npcamp.newsfeed.comment.dto.CreateCommentRequestDto;
 import com.npcamp.newsfeed.comment.service.CommentService;
+import com.npcamp.newsfeed.common.constant.RequestAttributeKey;
 import com.npcamp.newsfeed.common.payload.ApiResponse;
-import com.npcamp.newsfeed.post.dto.PostRequestDto;
+import com.npcamp.newsfeed.post.dto.CreatePostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
+import com.npcamp.newsfeed.post.dto.UpdatePostRequestDto;
 import com.npcamp.newsfeed.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +32,9 @@ public class PostController {
      * 생성
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@RequestBody @Valid PostRequestDto req) {
-        PostResponseDto dto = postService.createPost(req.getTitle(), req.getContent(), req.getWriterId());
+    public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@RequestBody @Valid CreatePostRequestDto req,
+                                                                   @RequestAttribute(RequestAttributeKey.USER_ID) Long writerId) {
+        PostResponseDto dto = postService.createPost(req.getTitle(), req.getContent(), writerId);
         return new ResponseEntity<>(ApiResponse.success(dto), HttpStatus.CREATED);
     }
 
@@ -58,9 +61,10 @@ public class PostController {
      * 수정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable Long id,
-                                                                   @RequestBody @Valid PostRequestDto req) {
-        PostResponseDto updated = postService.updatePost(id, req.getTitle(), req.getContent());
+    public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable(name = "id") Long postId,
+                                                                   @RequestAttribute(RequestAttributeKey.USER_ID) Long userId,
+                                                                   @RequestBody @Valid UpdatePostRequestDto req) {
+        PostResponseDto updated = postService.updatePost(postId, userId, req.getTitle(), req.getContent());
 
         return new ResponseEntity<>(ApiResponse.success(updated), HttpStatus.OK);
     }
@@ -69,8 +73,9 @@ public class PostController {
      * 삭제
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable(name = "id") Long postId,
+                                                        @RequestAttribute(RequestAttributeKey.USER_ID) Long userId) {
+        postService.deletePost(postId, userId);
 
         return new ResponseEntity<>(ApiResponse.success(), HttpStatus.OK);
     }
