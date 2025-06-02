@@ -100,4 +100,14 @@ public class PostController {
         Page<CommentDto> commentPage = commentService.getCommentPage(postId, pageable);
         return new ResponseEntity<>(ApiResponse.success(commentPage), HttpStatus.OK);
     }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<ApiResponse<Void>> toggleLike(@PathVariable Long id,
+                                                        @RequestAttribute(name = com.npcamp.newsfeed.common.constant.RequestAttribute.USER_ID) Long userId) {
+        boolean isNowLiked = postService.toggleLike(id, userId);
+        String message = isNowLiked ? "좋아요를 등록했습니다." : "좋아요를 취소했습니다.";
+        return new ResponseEntity<>(ApiResponse.success(message), HttpStatus.OK);
+    }
+
+
 }
