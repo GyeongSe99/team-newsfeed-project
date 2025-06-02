@@ -4,7 +4,6 @@ import com.npcamp.newsfeed.common.payload.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,16 +37,14 @@ public class GlobalExceptionHandler {
     // MethodArgumentNotValidException Exception
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        BindingResult bindingResult = e.getBindingResult();
+        StringBuilder messages = new StringBuilder();
 
-        StringBuilder builder = new StringBuilder();
-
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            builder.append(fieldError.getDefaultMessage());
+        // 디폴트 메시지 전부 출력
+        for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
+            messages.append(fieldError.getDefaultMessage());
         }
 
-        return ResponseEntity.status(status).body(ApiResponse.failure(builder.toString()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(messages.toString()));
     }
 }
