@@ -1,12 +1,12 @@
 package com.npcamp.newsfeed.user.service;
 
-import com.npcamp.newsfeed.user.dto.UserResponseDto;
 import com.npcamp.newsfeed.common.entity.User;
 import com.npcamp.newsfeed.common.exception.ErrorCode;
 import com.npcamp.newsfeed.common.exception.ResourceConflictException;
 import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
 import com.npcamp.newsfeed.common.security.PasswordEncoder;
 import com.npcamp.newsfeed.user.dto.UpdateUserResponseDto;
+import com.npcamp.newsfeed.user.dto.UserResponseDto;
 import com.npcamp.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUser(Long id) {
-        User user = userRepository.getUserOrElseThrow(id);
+        User user = userRepository.findByIdOrElseThrow(id);
         return UserResponseDto.toDto(user);
     }
 
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     public UpdateUserResponseDto updateUser(Long id, String name, String email, String password) {
 
         // 해당 Id를 갖는 유저 조회( 없다면 ResourceNotFoundException)
-        User user = userRepository.getUserOrElseThrow(id);
+        User user = userRepository.findByIdOrElseThrow(id);
 
         // 비밀번호 일치여부 확인
         if (!encoder.matches(password, user.getPassword())) {
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     public void updatePassword(Long id, String oldPassword, String newPassword) {
 
         // 해당 Id를 갖는 유저 조회
-        User user = userRepository.getUserOrElseThrow(id);
+        User user = userRepository.findByIdOrElseThrow(id);
 
         // 비밀번호 일치여부 확인
         if (!encoder.matches(oldPassword, user.getPassword())) {
