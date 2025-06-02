@@ -9,6 +9,7 @@ import com.npcamp.newsfeed.post.dto.CreatePostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
 import com.npcamp.newsfeed.post.dto.UpdatePostRequestDto;
 import com.npcamp.newsfeed.post.service.PostService;
+import com.npcamp.newsfeed.postlike.service.PostLikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final PostLikeService postLikeService;
 
     /**
      * 생성
@@ -99,5 +101,12 @@ public class PostController {
             10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CommentDto> commentPage = commentService.getCommentPage(postId, pageable);
         return new ResponseEntity<>(ApiResponse.success(commentPage), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<ApiResponse<Void>> toggleLike(@PathVariable(name = "id") Long postId,@RequestAttribute(name = RequestAttributeKey.USER_ID) Long userId) {
+        boolean isNowLiked = postLikeService.toggleLike(postId, userId);
+        String message = isNowLiked ? "좋아요를 등록했습니다." : "좋아요를 취소했습니다.";
+        return new ResponseEntity<>(ApiResponse.success(message), HttpStatus.OK);
     }
 }
