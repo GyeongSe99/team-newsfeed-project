@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,36 +15,35 @@ public class FollowService {
 
     private final FollowRepository followRepository;
 
-    // 새로운 팔로우 관계 생성
+    // 팔로우 생성
     @Transactional
     public FollowResponseDto createFollow(Long followerUserId, Long followeeUserId) {
         Follow follow = Follow.builder()
                 .followerUserId(followerUserId)
                 .followeeUserId(followeeUserId)
                 .build();
-
-        // DB에 저장
         Follow saved = followRepository.save(follow);
-
-        // 저장된 엔티티 기반으로 응답 DTO 생성
         return FollowResponseDto.toDto(saved);
     }
 
-    // 전체 팔로워 조회
+    // 팔로워 목록 조회
     @Transactional(readOnly = true)
-    public List<FollowResponseDto> getFollowersByFollowee(Long followeeUserId) {
-        List<Follow> follows = followRepository.findByFolloweeUserId(followeeUserId);
-        return follows.stream()
-                .map(FollowResponseDto::toDto)
-                .collect(Collectors.toList());
+    public List<Follow> getFollowers(Long userId) {
+        return followRepository.findByFolloweeUserId(userId);
     }
 
-    // 전체 팔로잉 조회
+    // 팔로잉 목록 조회
     @Transactional(readOnly = true)
-    public List<FollowResponseDto> getFolloweesByFollower(Long followerUserId) {
-        List<Follow> follows = followRepository.findByFollowerUserId(followerUserId);
-        return follows.stream()
-                .map(FollowResponseDto::toDto)
-                .collect(Collectors.toList());
+    public List<Follow> getFollowings(Long userId) {
+        return followRepository.findByFollowerUserId(userId);
+    }
+
+    // 단일 팔로우 조회
+    @Transactional(readOnly = true)
+    public Follow getFollowById(Long id) {
+        return followRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("해당 팔로우 관계를 찾을 수 없습니다. (id: " + id + ")")
+                );
     }
 }
