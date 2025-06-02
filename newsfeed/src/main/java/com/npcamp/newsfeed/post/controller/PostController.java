@@ -9,7 +9,6 @@ import com.npcamp.newsfeed.post.dto.PostResponseDto;
 import com.npcamp.newsfeed.post.service.PostService;
 
 import jakarta.validation.Valid;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
