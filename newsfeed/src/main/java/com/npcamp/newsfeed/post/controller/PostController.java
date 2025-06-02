@@ -3,6 +3,7 @@ package com.npcamp.newsfeed.post.controller;
 import com.npcamp.newsfeed.comment.dto.CommentDto;
 import com.npcamp.newsfeed.comment.dto.CreateCommentRequestDto;
 import com.npcamp.newsfeed.comment.service.CommentService;
+import com.npcamp.newsfeed.common.constant.RequestAttributeKey;
 import com.npcamp.newsfeed.common.payload.ApiResponse;
 import com.npcamp.newsfeed.post.dto.PostRequestDto;
 import com.npcamp.newsfeed.post.dto.PostResponseDto;
@@ -34,7 +35,7 @@ public class PostController {
      */
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponseDto>> createPost(@RequestBody @Valid PostRequestDto requestDto,
-                                                                   @RequestAttribute(name = com.npcamp.newsfeed.common.constant.RequestAttribute.USER_ID) Long userId ) {
+                                                                   @RequestAttribute(name = RequestAttributeKey.USER_ID) Long userId ) {
         PostResponseDto responseDto = postService.createPost(userId, requestDto);
         return new ResponseEntity<>(ApiResponse.success(responseDto), HttpStatus.CREATED);
     }
@@ -64,7 +65,7 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(@PathVariable Long id,
                                                                    @RequestBody @Valid PostRequestDto requestDto,
-                                                                   @RequestAttribute(name = com.npcamp.newsfeed.common.constant.RequestAttribute.USER_ID)  Long userId) {
+                                                                   @RequestAttribute(name = RequestAttributeKey.USER_ID)  Long userId) {
         PostResponseDto updated = postService.updatePost(id, userId, requestDto);
         return new ResponseEntity<>(ApiResponse.success(updated), HttpStatus.OK);
     }
@@ -74,7 +75,7 @@ public class PostController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePost( @PathVariable Long id,
-                                                         @RequestAttribute(name = com.npcamp.newsfeed.common.constant.RequestAttribute.USER_ID) Long userId) {
+                                                         @RequestAttribute(name = RequestAttributeKey.USER_ID) Long userId) {
         postService.deletePost(id, userId);
         return new ResponseEntity<>(ApiResponse.success(), HttpStatus.OK);
     }
@@ -103,7 +104,7 @@ public class PostController {
 
     @PostMapping("/{id}/like")
     public ResponseEntity<ApiResponse<Void>> toggleLike(@PathVariable Long id,
-                                                        @RequestAttribute(name = com.npcamp.newsfeed.common.constant.RequestAttribute.USER_ID) Long userId) {
+                                                        @RequestAttribute(name = RequestAttributeKey.USER_ID) Long userId) {
         boolean isNowLiked = postService.toggleLike(id, userId);
         String message = isNowLiked ? "좋아요를 등록했습니다." : "좋아요를 취소했습니다.";
         return new ResponseEntity<>(ApiResponse.success(message), HttpStatus.OK);
