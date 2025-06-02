@@ -42,3 +42,7 @@ out/
 
 # Node.js
 node_modules/
+
+# settings
+application.yml
+*.yml
