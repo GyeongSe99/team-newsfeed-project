@@ -1,6 +1,8 @@
 package com.npcamp.newsfeed.follow.service;
 
 import com.npcamp.newsfeed.common.entity.Follow;
+import com.npcamp.newsfeed.common.exception.ErrorCode;
+import com.npcamp.newsfeed.common.exception.ResourceNotFoundException;
 import com.npcamp.newsfeed.follow.dto.FollowRequestDto;
 import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
 import com.npcamp.newsfeed.follow.repository.FollowRepository;
@@ -40,7 +42,7 @@ public class FollowService {
 
     // 팔로잉 목록 조회
     @Transactional(readOnly = true)
-    public List<FollowResponseDto> getFollowings(Long userId) {
+    public List<FollowResponseDto> getFollowees(Long userId) {
         List<Follow> follows = followRepository.findByFollowerUserId(userId);
         return follows.stream()
                 .map(FollowResponseDto::toDto)
@@ -51,7 +53,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public FollowResponseDto getFollowById(Long id) {
         Follow follow = followRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.FOLLOW_NOT_FOUND));
         return FollowResponseDto.toDto(follow);
     }
 }

@@ -40,7 +40,7 @@ public class FollowController {
     // 팔로잉 목록 조회
     @GetMapping("/followings/{userId}")
     public ResponseEntity<ApiResponse<List<FollowResponseDto>>> getFollowings(@PathVariable Long userId) {
-        List<FollowResponseDto> followings = followService.getFollowings(userId);
+        List<FollowResponseDto> followings = followService.getFollowees(userId);
         return new ResponseEntity<>(ApiResponse.success(followings), HttpStatus.OK);
     }
 
