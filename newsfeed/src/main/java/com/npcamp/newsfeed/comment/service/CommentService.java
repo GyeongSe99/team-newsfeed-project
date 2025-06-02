@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,30 +20,30 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final AuthorValidator authorValidator;
 
-    public CommentDto createComment(Long postId, String content, Long userId) {
+    @Transactional
+    public CommentDto createComment(Long postId, String content, Long loginUserId) {
         Post findPost = postRepository.findByIdOrElseThrow(postId);
 
-        Comment comment = Comment.builder()
-                .postId(findPost.getId())
-                .content(content)
-                .userId(userId)
-                .build();
+        Comment comment = Comment.builder().postId(findPost.getId()).content(content).userId(loginUserId).build();
 
         Comment saved = commentRepository.save(comment);
 
         return CommentDto.toDto(saved);
     }
 
+    @Transactional(readOnly = true)
     public CommentDto getComment(Long id) {
         Comment comment = commentRepository.findByIdOrElseThrow(id);
         return CommentDto.toDto(comment);
     }
 
+    @Transactional(readOnly = true)
     public Page<CommentDto> getCommentPage(Long postId, Pageable pageable) {
         Page<Comment> commentPage = commentRepository.findAllByPostId(postId, pageable);
         return commentPage.map(CommentDto::toDto);
     }
 
+    @Transactional
     public CommentDto updateComment(Long commentId, String content, Long loginUserId) {
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
 
@@ -55,6 +56,7 @@ public class CommentService {
         return CommentDto.toDto(saved);
     }
 
+    @Transactional
     public void deleteComment(Long commentId, Long loginUserId) {
         Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
         authorValidator.validateOwner(findComment.getUserId(), loginUserId);
