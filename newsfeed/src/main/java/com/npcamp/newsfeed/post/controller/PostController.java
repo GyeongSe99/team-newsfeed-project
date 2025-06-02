@@ -95,7 +95,7 @@ public class PostController {
      * @return 댓글 목록을 담은 Page<CommentDto> 객체
      */
     @GetMapping("/{id}/comments")
-    public ResponseEntity<ApiResponse<?>> getComments(@PathVariable(name = "id") Long postId, @PageableDefault(size =
+    public ResponseEntity<ApiResponse<Page<CommentDto>>> getComments(@PathVariable(name = "id") Long postId, @PageableDefault(size =
             10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CommentDto> commentPage = commentService.getCommentPage(postId, pageable);
         return new ResponseEntity<>(ApiResponse.success(commentPage), HttpStatus.OK);
