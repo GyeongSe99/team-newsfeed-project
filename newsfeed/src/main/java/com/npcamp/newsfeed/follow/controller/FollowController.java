@@ -53,4 +53,14 @@ public class FollowController {
         FollowResponseDto followDto = followService.getFollowById(id, loginUserId);
         return new ResponseEntity<>(ApiResponse.success(followDto), HttpStatus.OK);
     }
+
+    // 팔로우 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteFollow(
+            @PathVariable Long id,
+            @RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId) {
+
+        followService.deleteFollow(id, loginUserId);
+        return new ResponseEntity<>(ApiResponse.success(null), HttpStatus.NO_CONTENT);
+    }
 }

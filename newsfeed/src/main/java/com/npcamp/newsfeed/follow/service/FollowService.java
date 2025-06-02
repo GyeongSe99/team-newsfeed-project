@@ -56,4 +56,17 @@ public class FollowService {
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.FOLLOW_NOT_FOUND));
         return FollowResponseDto.toDto(follow, loginUserId);
     }
+
+    // 팔로우 삭제
+    @Transactional
+    public void deleteFollow(Long id, Long loginUserId) {
+        Follow follow = followRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.FOLLOW_NOT_FOUND));
+
+        if (!follow.getFollowerUserId().equals(loginUserId)) {
+            throw new ResourceNotFoundException(ErrorCode.FORBIDDEN_FOLLOW_DELETE);
+        }
+
+        followRepository.delete(follow);
+    }
 }
