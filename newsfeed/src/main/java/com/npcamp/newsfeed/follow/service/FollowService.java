@@ -1,6 +1,8 @@
 package com.npcamp.newsfeed.follow.service;
 
 import com.npcamp.newsfeed.common.entity.Follow;
+import com.npcamp.newsfeed.common.exception.ErrorCode;
+import com.npcamp.newsfeed.common.exception.ResourceNotFoundException;
 import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
 import com.npcamp.newsfeed.follow.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +49,18 @@ public class FollowService {
         return follows.stream()
                 .map(FollowResponseDto::toDto)
                 .collect(Collectors.toList());
+    }
+
+    // 팔로우 삭제
+    @Transactional
+    public void deleteFollow(Long id, Long loginUserId) {
+        Follow follow = followRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.FOLLOW_NOT_FOUND));
+
+        if (!follow.getFollowerUserId().equals(loginUserId)) {
+            throw new ResourceNotFoundException(ErrorCode.FORBIDDEN_FOLLOW_DELETE);
+        }
+
+        followRepository.delete(follow);
     }
 }

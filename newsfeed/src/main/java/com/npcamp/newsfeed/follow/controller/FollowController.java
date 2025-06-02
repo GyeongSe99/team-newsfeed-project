@@ -1,5 +1,6 @@
 package com.npcamp.newsfeed.follow.controller;
 
+import com.npcamp.newsfeed.common.constant.RequestAttributeKey;
 import com.npcamp.newsfeed.common.payload.ApiResponse;
 import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
 import jakarta.validation.Valid;
@@ -41,5 +42,15 @@ public class FollowController {
     public ResponseEntity<ApiResponse<List<FollowResponseDto>>> getFollowers(@PathVariable Long followeeId) {
         List<FollowResponseDto> followers = followService.getFolloweesByFollower(followeeId);
         return ResponseEntity.ok(ApiResponse.success(followers));
+    }
+
+    // 팔로우 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteFollow(
+            @PathVariable Long id,
+            @RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId) {
+
+        followService.deleteFollow(id, loginUserId);
+        return new ResponseEntity<>(ApiResponse.success(null), HttpStatus.NO_CONTENT);
     }
 }
