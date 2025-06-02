@@ -13,7 +13,8 @@ public enum ErrorCode {
 
     // 403 : FORBIDDEN Exception
     INVALID_PASSWORD(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다."),
-    UNAUTHORIZED_USER(HttpStatus.FORBIDDEN, "해당 게시물을 수정·삭제할 권한이 없습니다."),  // 새로 추가
+    UNAUTHORIZED_USER(HttpStatus.FORBIDDEN, "해당 게시물을 수정·삭제할 권한이 없습니다."),
+    CANNOT_LIKE_OWN_POST(HttpStatus.FORBIDDEN, "본인의 게시물에는 좋아요를 남길 수 없습니다."),// 새로 추가
 
 
     // 404 : NOT_FOUND Exception
