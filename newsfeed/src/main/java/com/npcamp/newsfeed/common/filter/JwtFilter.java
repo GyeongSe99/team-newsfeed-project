@@ -1,7 +1,7 @@
 package com.npcamp.newsfeed.common.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.npcamp.newsfeed.common.constant.RequestAttribute;
+import com.npcamp.newsfeed.common.constant.RequestAttributeKey;
 import com.npcamp.newsfeed.common.exception.ErrorCode;
 import com.npcamp.newsfeed.common.payload.ApiResponse;
 import com.npcamp.newsfeed.common.security.JwtUtil;
@@ -56,7 +56,7 @@ public class JwtFilter implements Filter {
 
         // 5. 토큰에서 userId 추출 후 HttpServletRequest에 저장
         Long userId = jwtUtil.extractUserId(token);
-        httpRequest.setAttribute(RequestAttribute.USER_ID, userId);
+        httpRequest.setAttribute(RequestAttributeKey.USER_ID, userId);
 
         // 6. 다음 필터로 요청 전달
         chain.doFilter(httpRequest, httpResponse);
