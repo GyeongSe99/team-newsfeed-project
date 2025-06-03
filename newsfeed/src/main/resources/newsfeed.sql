@@ -18,8 +18,8 @@ CREATE TABLE follow
     followee_user_id BIGINT NULL,
     created_at       DATETIME(6) NULL,
     updated_at       DATETIME(6) NULL,
-    FOREIGN KEY (follower_user_id) REFERENCES user (id),
-    FOREIGN KEY (followee_user_id) REFERENCES user (id)
+    FOREIGN KEY (follower_user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (followee_user_id) REFERENCES user (id) ON DELETE CASCADE
 );
 
 -- Post 테이블
@@ -31,7 +31,7 @@ CREATE TABLE post
     writer_id  BIGINT NULL,
     created_at DATETIME(6) NULL,
     updated_at DATETIME(6) NULL,
-    FOREIGN KEY (writer_id) REFERENCES user (id)
+    FOREIGN KEY (writer_id) REFERENCES user (id) ON DELETE CASCADE
 );
 
 -- Comment 테이블
@@ -43,8 +43,8 @@ CREATE TABLE comment
     post_id    BIGINT NULL,
     created_at DATETIME(6) NULL,
     updated_at DATETIME(6) NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (post_id) REFERENCES post (id)
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE
 );
 
 -- Post Like 테이블
@@ -53,6 +53,6 @@ CREATE TABLE post_like
     post_like_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id      BIGINT NULL,
     post_id      BIGINT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (post_id) REFERENCES post (id)
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE
 );
