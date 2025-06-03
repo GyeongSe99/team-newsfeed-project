@@ -4,9 +4,9 @@ import com.npcamp.newsfeed.auth.dto.CreateUserResponseDto;
 import com.npcamp.newsfeed.common.entity.User;
 import com.npcamp.newsfeed.common.exception.ErrorCode;
 import com.npcamp.newsfeed.common.exception.ResourceConflictException;
-import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
 import com.npcamp.newsfeed.common.security.JwtUtil;
 import com.npcamp.newsfeed.common.security.PasswordEncoder;
+import com.npcamp.newsfeed.common.validator.PasswordValidator;
 import com.npcamp.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final JwtUtil jwtUtil;
+    private final PasswordValidator passwordValidator;
 
     @Override
     @Transactional
@@ -57,9 +58,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByIdOrElseThrow(id);
 
         // 비밀번호 일치여부 확인
-        if (!encoder.matches(password, user.getPassword())) {
-            throw new ResourceForbiddenException(ErrorCode.INVALID_PASSWORD);
-        }
+        passwordValidator.verifyMatch(password, user.getPassword());
 
         // 회원탈퇴 ( deleted = false -> true / soft delete 적용 )
         userRepository.delete(user);
@@ -79,9 +78,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmailOrElseThrow(email);
 
         // 비밀번호 일치여부 확인
-        if (!encoder.matches(password, user.getPassword())) {
-            throw new ResourceForbiddenException(ErrorCode.INVALID_PASSWORD);
-        }
+        passwordValidator.verifyMatch(password, user.getPassword());
 
         return jwtUtil.generateToken(user.getId()); // JWT 토큰 발급 (userId 기반)
     }
