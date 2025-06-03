@@ -5,6 +5,7 @@ import com.npcamp.newsfeed.common.exception.ErrorCode;
 import com.npcamp.newsfeed.common.exception.ResourceConflictException;
 import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
 import com.npcamp.newsfeed.common.security.PasswordEncoder;
+import com.npcamp.newsfeed.common.validator.PasswordValidator;
 import com.npcamp.newsfeed.user.dto.UpdateUserResponseDto;
 import com.npcamp.newsfeed.user.dto.UserResponseDto;
 import com.npcamp.newsfeed.user.repository.UserRepository;
@@ -18,8 +19,10 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final PasswordValidator passwordValidator;
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto getUser(Long id) {
         User user = userRepository.findByIdOrElseThrow(id);
         return UserResponseDto.toDto(user);
@@ -44,18 +47,17 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByIdOrElseThrow(id);
 
         // 비밀번호 일치여부 확인
-        if (!encoder.matches(password, user.getPassword())) {
-            throw new ResourceForbiddenException(ErrorCode.INVALID_PASSWORD);
-        }
+        passwordValidator.verifyMatch(password, user.getPassword());
 
         // 유니크 이메일 중복 확인
-        if (userRepository.existsByEmail(email)) {
+        if (!user.getEmail().equals(email) && userRepository.existsByEmail(email)) {
             throw new ResourceConflictException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         user.updateUser(name, email);
+        User savedUser = userRepository.save(user);
 
-        return UpdateUserResponseDto.toDto(user);
+        return UpdateUserResponseDto.toDto(savedUser);
     }
 
     /**
@@ -73,17 +75,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByIdOrElseThrow(id);
 
         // 비밀번호 일치여부 확인
-        if (!encoder.matches(oldPassword, user.getPassword())) {
-            throw new ResourceForbiddenException(ErrorCode.INVALID_PASSWORD);
-        }
+        passwordValidator.verifyMatch(newPassword, user.getPassword());
 
-        // 기존 비밀번호와 동일한지 확인
-        if (oldPassword.equals(newPassword)) {
-            throw new ResourceConflictException(ErrorCode.REUSED_PASSWORD);
-        }
+        // 기존 비밀번호와 동일한지 확인. 동일할 경우 변경할 수 없으므로 Exception 발생
+        passwordValidator.verifyNotSame(newPassword, user.getPassword());
 
         user.updatePassword(encoder.encode(newPassword));
-
     }
 
 }
