@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/follow")
 @RequiredArgsConstructor
@@ -23,13 +21,11 @@ public class FollowController {
 
     // 팔로우 생성
     @PostMapping
-    public ResponseEntity<ApiResponse<FollowResponseDto>> createFollow(
-            @RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId,
-            @Valid @RequestBody FollowRequestDto followDto) {
+    public ResponseEntity<ApiResponse<FollowResponseDto>> createFollow(@RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId, @Valid @RequestBody FollowRequestDto followDto) {
 
         FollowResponseDto responseDto = followService.createFollow(loginUserId, followDto.getFolloweeUserId());
 
-        return new ResponseEntity<>(ApiResponse.success(responseDto),HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success(responseDto), HttpStatus.CREATED);
     }
 
     // 나의 팔로워 목록 조회
@@ -54,8 +50,7 @@ public class FollowController {
     }
 
     @DeleteMapping
-    public ResponseEntity<ApiResponse<Void>> deleteFollow(@RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId,
-                                                          @Valid @RequestBody FollowRequestDto followDto) {
+    public ResponseEntity<ApiResponse<Void>> deleteFollow(@RequestAttribute(RequestAttributeKey.USER_ID) Long loginUserId, @Valid @RequestBody FollowRequestDto followDto) {
         followService.deleteFollow(loginUserId, followDto.getFolloweeUserId());
         return new ResponseEntity<>(ApiResponse.success("팔로우를 취소했습니다."), HttpStatus.OK);
     }

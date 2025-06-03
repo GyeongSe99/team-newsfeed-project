@@ -6,7 +6,6 @@ import com.npcamp.newsfeed.common.exception.ResourceConflictException;
 import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
 import com.npcamp.newsfeed.common.exception.ResourceNotFoundException;
 import com.npcamp.newsfeed.follow.dto.FollowListDto;
-import com.npcamp.newsfeed.follow.dto.FollowRequestDto;
 import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
 import com.npcamp.newsfeed.follow.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
