@@ -11,5 +11,5 @@ import lombok.AllArgsConstructor;
 public class FollowRequestDto {
 
     @NotNull(message = "팔로잉 ID는 필수입니다.")
-    private Long followeeUserId; // 팔로잉
+    private Long followeeUserId; // 팔로우할 대상
 }

@@ -2,12 +2,15 @@ package com.npcamp.newsfeed.postlike.service;
 
 import com.npcamp.newsfeed.common.entity.Post;
 import com.npcamp.newsfeed.common.entity.PostLike;
+import com.npcamp.newsfeed.common.exception.ResourceForbiddenException;
 import com.npcamp.newsfeed.common.validator.AuthorValidator;
 import com.npcamp.newsfeed.post.repository.PostRepository;
 import com.npcamp.newsfeed.postlike.repository.PostLikeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static com.npcamp.newsfeed.common.exception.ErrorCode.CANNOT_LIKE_OWN_POST;
 
 @RequiredArgsConstructor
 @Service
@@ -21,8 +24,11 @@ public class PostLikeService {
     public boolean toggleLike(Long postId, Long userId) {
         // 게시물 존재 여부
         Post post = postRepository.findByIdOrElseThrow(postId);
+
         // 본인 게시글인지 검사 (본인 작성글에는 좋아요 불가)
-        authorValidator.validateOwner(post.getWriterId(), userId);
+        if (post.getWriterId().equals(userId)){
+            throw new ResourceForbiddenException(CANNOT_LIKE_OWN_POST);
+        }
 
         // 이미 좋아요가 눌러져 있는지 확인
         boolean alreadyLiked = postLikeRepository.existsByUserIdAndPostId(userId, postId);
