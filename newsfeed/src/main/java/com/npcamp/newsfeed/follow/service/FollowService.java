@@ -1,6 +1,9 @@
 package com.npcamp.newsfeed.follow.service;
 
 import com.npcamp.newsfeed.common.entity.Follow;
+import com.npcamp.newsfeed.common.exception.ErrorCode;
+import com.npcamp.newsfeed.common.exception.ResourceNotFoundException;
+import com.npcamp.newsfeed.follow.dto.FollowRequestDto;
 import com.npcamp.newsfeed.follow.dto.FollowResponseDto;
 import com.npcamp.newsfeed.follow.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,36 +19,41 @@ public class FollowService {
 
     private final FollowRepository followRepository;
 
-    // 새로운 팔로우 관계 생성
+    // 팔로우 생성
     @Transactional
-    public FollowResponseDto createFollow(Long followerUserId, Long followeeUserId) {
+    public FollowResponseDto createFollow(Long followerUserId, FollowRequestDto followDto) {
+        Long followeeUserId = followDto.getFolloweeUserId(); // DTO에서 추출
         Follow follow = Follow.builder()
                 .followerUserId(followerUserId)
                 .followeeUserId(followeeUserId)
                 .build();
-
-        // DB에 저장
         Follow saved = followRepository.save(follow);
-
-        // 저장된 엔티티 기반으로 응답 DTO 생성
         return FollowResponseDto.toDto(saved);
     }
 
-    // 전체 팔로워 조회
+    // 팔로워 목록 조회
     @Transactional(readOnly = true)
-    public List<FollowResponseDto> getFollowersByFollowee(Long followeeUserId) {
-        List<Follow> follows = followRepository.findByFolloweeUserId(followeeUserId);
+    public List<FollowResponseDto> getFollowers(Long userId) {
+        List<Follow> follows = followRepository.findByFolloweeUserId(userId);
         return follows.stream()
                 .map(FollowResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
-    // 전체 팔로잉 조회
+    // 팔로잉 목록 조회
     @Transactional(readOnly = true)
-    public List<FollowResponseDto> getFolloweesByFollower(Long followerUserId) {
-        List<Follow> follows = followRepository.findByFollowerUserId(followerUserId);
+    public List<FollowResponseDto> getFollowees(Long userId) {
+        List<Follow> follows = followRepository.findByFollowerUserId(userId);
         return follows.stream()
                 .map(FollowResponseDto::toDto)
                 .collect(Collectors.toList());
+    }
+
+    // 단일 팔로우 조회
+    @Transactional(readOnly = true)
+    public FollowResponseDto getFollowById(Long id) {
+        Follow follow = followRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.FOLLOW_NOT_FOUND));
+        return FollowResponseDto.toDto(follow);
     }
 }
