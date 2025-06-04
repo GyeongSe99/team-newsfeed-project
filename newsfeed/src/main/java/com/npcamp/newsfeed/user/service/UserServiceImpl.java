@@ -75,10 +75,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByIdOrElseThrow(id);
 
         // 비밀번호 일치여부 확인
-        passwordValidator.verifyMatch(newPassword, user.getPassword());
+        passwordValidator.verifyMatch(oldPassword, user.getPassword());
 
         // 기존 비밀번호와 동일한지 확인. 동일할 경우 변경할 수 없으므로 Exception 발생
-        passwordValidator.verifyNotSame(newPassword, user.getPassword());
+        passwordValidator.verifyNotSame(newPassword, oldPassword);
 
         user.updatePassword(encoder.encode(newPassword));
     }

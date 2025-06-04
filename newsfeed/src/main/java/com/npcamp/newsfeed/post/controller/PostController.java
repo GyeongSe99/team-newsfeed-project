@@ -104,7 +104,7 @@ public class PostController {
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<ApiResponse<Void>> toggleLike(@PathVariable(name = "id") Long postId,@RequestAttribute(name = RequestAttributeKey.USER_ID) Long userId) {
+    public ResponseEntity<ApiResponse<Void>> toggleLike(@PathVariable(name = "id") Long postId, @RequestAttribute(name = RequestAttributeKey.USER_ID) Long userId) {
         boolean isNowLiked = postLikeService.toggleLike(postId, userId);
         String message = isNowLiked ? "좋아요를 등록했습니다." : "좋아요를 취소했습니다.";
         return new ResponseEntity<>(ApiResponse.success(message), HttpStatus.OK);

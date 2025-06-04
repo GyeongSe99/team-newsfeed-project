@@ -24,7 +24,7 @@ public class PasswordValidator {
         }
     }
 
-    public void verifyNotSame(String inputPassword, String originalPassword) {
+    public void     verifyNotSame(String inputPassword, String originalPassword) {
         if (inputPassword.equals(originalPassword)) {
             throw new ResourceConflictException(ErrorCode.REUSED_PASSWORD);
         }
